@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
+import { Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import Animated, {
   runOnJS,
   useAnimatedReaction,
@@ -24,6 +26,16 @@ function Puzzle() {
 
   const scale = useSharedValue(0);
   const correctPieces = useSharedValue(0);
+  const navigation = useNavigation<any>();
+
+const showSuccess = () => {
+  Alert.alert("¡Lo has logrado!", "", [
+    {
+      text: "Continuar",
+      onPress: () => navigation.navigate("Login"),
+    },
+  ]);
+};
 
   const handleReset = useCallback(() => {
     setCurrentShape((prev) => (prev + 1 === SHAPES.length ? 0 : prev + 1));
@@ -36,18 +48,19 @@ function Puzzle() {
   }, [shuffledPieces]);
 
   useAnimatedReaction(
-    () => correctPieces.value >= 4,
-    (isDone) => {
-      if (isDone) {
-        scale.value = withDelay(
-          1000,
-          withTiming(0, {}, (isFinished) => {
-            if (isFinished) runOnJS(handleReset)();
-          })
-        );
-      }
+  () => correctPieces.value >= 4,
+  (isDone) => {
+    if (isDone) {
+      runOnJS(showSuccess)();
+      scale.value = withDelay(
+        1000,
+        withTiming(0, {}, (isFinished) => {
+          if (isFinished) runOnJS(handleReset)();
+        })
+      );
     }
-  );
+  }
+);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: PIECES_DISTANCE / 2 }, { scale: scale.value }],

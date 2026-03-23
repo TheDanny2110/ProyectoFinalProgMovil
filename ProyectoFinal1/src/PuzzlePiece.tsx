@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
+import { Alert } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  runOnJS,
   SharedValue,
   useAnimatedStyle,
   useSharedValue,
@@ -89,9 +91,15 @@ function PuzzlePiece({ index, shape, shuffledPieces, correctPieces }: Props) {
       rotate.value = withSpring(isCorrect ? 0 : randomRotation);
       z.value = withDelay(500, withTiming(0)); // Delay to wait for animation
 
+      const showError = () => {
+        Alert.alert("Inténtalo de nuevo");
+      };
+
       if (isCorrect) {
         isEnabled.value = 0;
         correctPieces.value++;
+      } else {
+        runOnJS(showError)();
       }
     });
 
