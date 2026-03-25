@@ -2,6 +2,7 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
+
 export default function LoginScreen() {
   const navigation = useNavigation<any>();
 
@@ -40,6 +41,8 @@ export default function LoginScreen() {
     </View>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", padding: 20 },
